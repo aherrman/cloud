@@ -24,7 +24,7 @@ alias grep='grep --color'
 export PS1='%{[0;33m%}%~%{[0;m%}
 %{[0;32m%}$%{[0;m%} '
 
-export PATH=$PATH:/cygdrive/c/Program\ Files/Vim/vim70/:/cygdrive/m/bin/:/cygdrive/m/bin/PsTools/:/mnt/windows/Java/jdk1.6.0/bin
+export PATH=$PATH:/cygdrive/c/Program\ Files/Vim/vim72/:/cygdrive/m/bin/:/cygdrive/m/bin/PsTools/:/mnt/windows/Java/jdk1.6.0/bin
 
 setopt AUTO_CD
 setopt CORRECT
