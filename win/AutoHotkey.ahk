@@ -2,20 +2,81 @@
 
 ; Helper Functions -------------------------------------------------------------
 
-ResizeAndCenter(w, h)
-{
-  ScreenWidth := GetScreenWidth()
-  ScreenHeight := GetScreenHeight()
-  WinMove A,,(ScreenWidth/2)-(w/2),(ScreenHeight/2)-(h/2),w,h
+; Gets the edge that the taskbar is docked to.  Returns:
+;   "top"
+;   "right"
+;   "bottom"
+;   "left"
+GetTaskbarEdge() {
+  WinGetPos,TX,TY,TW,TH,ahk_class Shell_TrayWnd,,,
+
+  if (TW = A_ScreenWidth) { ; Vertical Taskbar
+    if (TY = 0) {
+      return "top"
+    } else {
+      return "bottom"
+    }
+  } else { ; Horizontal Taskbar
+    if (TX = 0) {
+      return "left"
+    } else {
+      return "right"
+    }
+  }
+}
+
+GetScreenTop() {
+  WinGetPos,TX,TY,TW,TH,ahk_class Shell_TrayWnd,,,
+  TaskbarEdge := GetTaskbarEdge()
+
+  if (TaskbarEdge = "top") {
+    return TH
+  } else {
+    return 0
+  }
+}
+
+GetScreenLeft() {
+  WinGetPos,TX,TY,TW,TH,ahk_class Shell_TrayWnd,,,
+  TaskbarEdge := GetTaskbarEdge()
+
+  if (TaskbarEdge = "left") {
+    return TW
+  } else {
+    return 0
+  }
 }
 
 GetScreenWidth() {
-  return A_ScreenWidth
+  WinGetPos,TX,TY,TW,TH,ahk_class Shell_TrayWnd,,,
+  TaskbarEdge := GetTaskbarEdge()
+
+  if (TaskbarEdge = "top" or TaskbarEdge = "bottom") {
+    return A_ScreenWidth
+  } else {
+    return A_ScreenWidth - TW
+  }
 }
 
 GetScreenHeight() {
   WinGetPos,TX,TY,TW,TH,ahk_class Shell_TrayWnd,,,
-  return A_ScreenHeight - TH
+  TaskbarEdge := GetTaskbarEdge()
+
+  if (TaskbarEdge = "top" or TaskbarEdge = "bottom") {
+    return A_ScreenHeight - TH
+  } else {
+    return A_ScreenHeight
+  }
+}
+
+ResizeAndCenter(w, h)
+{
+  ScreenX := GetScreenLeft()
+  ScreenY := GetScreenTop()
+  ScreenWidth := GetScreenWidth()
+  ScreenHeight := GetScreenHeight()
+
+  WinMove A,,ScreenX + (ScreenWidth/2)-(w/2),ScreenY + (ScreenHeight/2)-(h/2),w,h
 }
 
 ; Window Management ------------------------------------------------------------
@@ -34,78 +95,96 @@ return
   ResizeAndCenter(1280,1024)
 return
 
-#0::
-  ScreenWidth := GetScreenWidth()
-  ScreenHeight := GetScreenHeight()
-  ResizeAndCenter((ScreenWidth - 100), (ScreenHeight - 100))
-return
-
 #-::
   WinGetPos,,,W,H,A
   WinMove a,,,,W-1,H-1
   WinMove a,,,,W,H
 return
 
+#0::
+  ScreenWidth := GetScreenWidth()
+  ScreenHeight := GetScreenHeight()
+  ResizeAndCenter((ScreenWidth - 100), (ScreenHeight - 100))
+return
+
 ; Move window to left edge of screen
 
 #Numpad7::
-  WinMove A,,0,0,,
+  SX := GetScreenLeft()
+  SY := GetScreenTop()
+  WinMove A,,SX,SY,,
 return
 
 #Numpad4::
+  SX := GetScreenLeft()
+  SY := GetScreenTop()
   SH := GetScreenHeight()
   WinGetPos,,,W,H,A
-  WinMove A,,0,(SH/2) - (H/2),,
+  WinMove A,,SX,SY + (SH/2) - (H/2),,
 return
 
 #Numpad1::
+  SX := GetScreenLeft()
+  SY := GetScreenTop()
   SH := GetScreenHeight()
   WinGetPos,,,W,H,A
-  WinMove A,,0,SH - H,,
+  WinMove A,,SX,SY + SH - H,,
 return
 
 ; Move window to center of screen
 
 #Numpad8::
+  SX := GetScreenLeft()
+  SY := GetScreenTop()
   SW := GetScreenWidth()
   WinGetPos,,,W,H,A
-  WinMove A,,(SW/2)-(W/2),0,,
+  WinMove A,,SX + (SW/2)-(W/2),SY,,
 return
 
 #Numpad5::
+  SX := GetScreenLeft()
+  SY := GetScreenTop()
   SW := GetScreenWidth()
   SH := GetScreenHeight()
   WinGetPos,,,W,H,A
-  WinMove A,,(SW/2)-(W/2),(SH/2)-(H/2),,
+  WinMove A,,SX + (SW/2)-(W/2),SY + (SH/2)-(H/2),,
 return
 
 #Numpad2::
+  SX := GetScreenLeft()
+  SY := GetScreenTop()
   SW := GetScreenWidth()
   SH := GetScreenHeight()
   WinGetPos,,,W,H,A
-  WinMove A,,(SW/2)-(W/2),SH-H,,
+  WinMove A,,SX + (SW/2)-(W/2),SY + SH-H,,
 return
 
 ; Move window to right edge of screen
 
 #Numpad9::
+  SX := GetScreenLeft()
+  SY := GetScreenTop()
   SW := GetScreenWidth()
   WinGetPos,,,W,H,A
-  WinMove A,,SW-W,0,,
+  WinMove A,,SX + SW-W,SY,,
 return
 
 #Numpad6::
+  SX := GetScreenLeft()
+  SY := GetScreenTop()
   SW := GetScreenWidth()
   SH := GetScreenHeight()
   WinGetPos,,,W,H,A
-  WinMove A,,SW-W,(SH/2)-(H/2),,
+  WinMove A,,SX + SW-W,SY + (SH/2)-(H/2),,
 return
 
 #Numpad3::
+  SX := GetScreenLeft()
+  SY := GetScreenTop()
   SW := GetScreenWidth()
   SH := GetScreenHeight()
   WinGetPos,,,W,H,A
-  WinMove A,,SW-W,SH-H,,
+  WinMove A,,SX + SW-W,SY + SH-H,,
 return
 
 ; Program Shortcuts ------------------------------------------------------------
