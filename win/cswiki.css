@@ -1,0 +1,38 @@
+@namespace url(http://www.w3.org/1999/xhtml);
+
+@-moz-document domain("cswiki") {
+
+.wiki-content p, .commentblock p {
+  width: 800px;
+}
+
+h1, h2, h3, h4, h5 {
+  width: 100%;
+}
+
+.pagebody {
+  width: 800px;
+}
+
+.code {
+  width: 800px;
+}
+
+#PageContent {
+  width: 900px;
+  margin: auto !important;
+}
+
+#PageContent > table> tbody > tr+ tr > td > table > tbody > tr > td > a > img {
+  display : none;
+}
+
+body {
+  background-color: #00003F !important;
+}
+
+#poweredby {
+  display : none;
+}
+
+}
