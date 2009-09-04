@@ -18,5 +18,11 @@ set gfn=Consolas:h9:cANSI
 let tlist_ssas_settings = 'ssas;c:class;f:function;m:member'
 
 " Change background of all characters past the 80th
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%81v.*/
+function SetOverlength()
+  highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+  match OverLength /\%81v.*/
+endfunction
+
+call SetOverlength()
+
+command! -nargs=0 -bar SetOL call SetOverlength()
