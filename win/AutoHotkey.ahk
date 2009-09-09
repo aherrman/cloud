@@ -195,4 +195,5 @@ return
 
 ; Misc -------------------------------------------------------------------------
 
-Capslock::Escape
++CapsLock::CapsLock
+CapsLock::Escape
